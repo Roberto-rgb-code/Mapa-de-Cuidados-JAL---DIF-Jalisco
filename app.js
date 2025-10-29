@@ -1,10 +1,14 @@
 // Cargar módulos usando $arcgis.import() según la documentación oficial
-const [WebMap, MapView, Legend, ScaleBar, FeatureLayer] = await Promise.all([
+const [WebMap, MapView, Legend, ScaleBar, FeatureLayer, Zoom, Home, Search, Fullscreen] = await Promise.all([
     $arcgis.import("esri/WebMap"),
     $arcgis.import("esri/views/MapView"),
     $arcgis.import("esri/widgets/Legend"),
     $arcgis.import("esri/widgets/ScaleBar"),
-    $arcgis.import("esri/layers/FeatureLayer")
+    $arcgis.import("esri/layers/FeatureLayer"),
+    $arcgis.import("esri/widgets/Zoom"),
+    $arcgis.import("esri/widgets/Home"),
+    $arcgis.import("esri/widgets/Search"),
+    $arcgis.import("esri/widgets/Fullscreen")
 ]);
 
 // ID del webmap de ArcGIS
@@ -68,6 +72,32 @@ function initializeMap() {
                 }
             });
         }
+        
+        // Agregar widgets de navegación estándar de ArcGIS
+        
+        // Widget de Zoom (botones + y -)
+        const zoom = new Zoom({
+            view: view
+        });
+        view.ui.add(zoom, "top-left");
+        
+        // Widget de Home (centrar mapa)
+        const home = new Home({
+            view: view
+        });
+        view.ui.add(home, "top-left");
+        
+        // Widget de búsqueda
+        const search = new Search({
+            view: view
+        });
+        view.ui.add(search, "top-left");
+        
+        // Widget de pantalla completa
+        const fullscreen = new Fullscreen({
+            view: view
+        });
+        view.ui.add(fullscreen, "top-left");
         
         // Agregar widget de leyenda si hay capas
         if (webmap.layers.length > 0) {
