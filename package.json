@@ -1,0 +1,21 @@
+{
+  "name": "mapa-cuidados-jal",
+  "version": "1.0.0",
+  "description": "Aplicación web para visualizar y filtrar el mapa de cuidados de Jalisco usando ArcGIS",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 8080 -o",
+    "serve": "npx http-server -p 8080"
+  },
+  "keywords": [
+    "arcgis",
+    "mapa",
+    "jalisco",
+    "geospatial"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {}
+}
+

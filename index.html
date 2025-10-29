@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Cuidados JAL - DIF Jalisco</title>
+    <!-- Calcite Design System (usado por ArcGIS) -->
+    <link rel="stylesheet" href="https://js.arcgis.com/calcite-components/3.3.3/calcite.css">
+    <!-- ArcGIS SDK Styles -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.34/esri/themes/light/main.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar con filtros -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="header-content">
+                    <h1>Mapa de Cuidados JAL</h1>
+                    <p class="subtitle">Sistema DIF Jalisco</p>
+                    <p class="filter-title">Filtros de búsqueda</p>
+                </div>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="actividad-filter">
+                        <strong>Nombre de clase de la actividad</strong>
+                    </label>
+                    <select id="actividad-filter" class="filter-select">
+                        <option value="">Todas las actividades</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="municipio-filter">
+                        <strong>Municipio</strong>
+                    </label>
+                    <select id="municipio-filter" class="filter-select">
+                        <option value="">Todos los municipios</option>
+                    </select>
+                </div>
+                
+                <div class="filter-actions">
+                    <button id="reset-filters" class="btn btn-secondary">Limpiar filtros</button>
+                    <button id="apply-filters" class="btn btn-primary">Aplicar filtros</button>
+                </div>
+                
+                <div class="results-info">
+                    <p id="results-count">Cargando...</p>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Mapa -->
+        <div class="map-container">
+            <div id="viewDiv"></div>
+            
+            <!-- Loading indicator -->
+            <div id="loading" class="loading-overlay">
+                <div class="spinner"></div>
+                <p>Cargando mapa...</p>
+            </div>
+            
+            <!-- Toggle sidebar button -->
+            <button id="sidebar-toggle" class="sidebar-toggle">
+                <span class="toggle-icon">☰</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Load the JavaScript Maps SDK core API -->
+    <script src="https://js.arcgis.com/4.34/"></script>
+    
+    <!-- Load custom application code -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
+
