@@ -1,5 +1,5 @@
 // Cargar módulos usando $arcgis.import() según la documentación oficial
-const [WebMap, MapView, Legend, ScaleBar, FeatureLayer, Zoom, Home, Search, Fullscreen] = await Promise.all([
+const [WebMap, MapView, Legend, ScaleBar, FeatureLayer, Zoom, Home, Search, Fullscreen, geometryEngine] = await Promise.all([
     $arcgis.import("esri/WebMap"),
     $arcgis.import("esri/views/MapView"),
     $arcgis.import("esri/widgets/Legend"),
@@ -8,7 +8,8 @@ const [WebMap, MapView, Legend, ScaleBar, FeatureLayer, Zoom, Home, Search, Full
     $arcgis.import("esri/widgets/Zoom"),
     $arcgis.import("esri/widgets/Home"),
     $arcgis.import("esri/widgets/Search"),
-    $arcgis.import("esri/widgets/Fullscreen")
+    $arcgis.import("esri/widgets/Fullscreen"),
+    $arcgis.import("esri/geometry/geometryEngine")
 ]);
 
 // ID del webmap de ArcGIS
@@ -268,6 +269,11 @@ function applyFilters() {
     // Aplicar filtro a la capa
     featureLayer.definitionExpression = whereClause;
     
+    // Si se filtró por municipio, centrar el mapa en esa área
+    if (municipioValue && municipioField) {
+        centerMapOnFilteredFeatures();
+    }
+    
     // Actualizar contador
     updateResultsCount();
 }
@@ -302,6 +308,39 @@ function resetFilters() {
         featureLayer.definitionExpression = "1=1";
         updateResultsCount();
     }
+}
+
+// Centrar el mapa en los features filtrados
+function centerMapOnFilteredFeatures() {
+    if (!featureLayer || !view) return;
+    
+    const query = featureLayer.createQuery();
+    query.where = featureLayer.definitionExpression || "1=1";
+    query.returnGeometry = true;
+    query.outSpatialReference = view.spatialReference;
+    
+    featureLayer.queryFeatures(query).then((results) => {
+        if (results.features.length > 0) {
+            // Crear un extent que contenga todos los features filtrados
+            const geometries = results.features.map(feature => feature.geometry);
+            
+            // Usar geometryEngine para crear un extent que contenga todas las geometrías
+            const extent = geometryEngine.union(geometries).extent;
+            
+            // Expandir un poco el extent para mejor visualización
+            const expandedExtent = extent.expand(1.2);
+            
+            // Centrar el mapa en el extent
+            view.goTo({
+                target: expandedExtent,
+                duration: 1000 // Animación de 1 segundo
+            }).catch((error) => {
+                console.warn("Error al centrar el mapa:", error);
+            });
+        }
+    }).catch((error) => {
+        console.error("Error al obtener features para centrar:", error);
+    });
 }
 
 // Actualizar contador de resultados
