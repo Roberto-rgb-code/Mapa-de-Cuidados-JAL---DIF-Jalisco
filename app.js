@@ -25,6 +25,7 @@ const resetFiltersBtn = document.getElementById("reset-filters");
 const resultsCount = document.getElementById("results-count");
 const sidebarToggle = document.getElementById("sidebar-toggle");
 const sidebar = document.querySelector(".sidebar");
+const sidebarOverlay = document.getElementById("sidebar-overlay");
 
 let webmap = null;
 let view = null;
@@ -234,10 +235,40 @@ function setupEventListeners() {
     
     // Toggle sidebar en móvil
     if (sidebarToggle) {
-        sidebarToggle.addEventListener("click", () => {
-            sidebar.classList.toggle("hidden");
+        sidebarToggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleSidebar();
         });
     }
+    
+    // Cerrar sidebar al hacer clic en el overlay
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener("click", () => {
+            closeSidebar();
+        });
+    }
+    
+    // Cerrar sidebar al hacer clic fuera en mobile
+    function toggleSidebar() {
+        sidebar.classList.toggle("hidden");
+        if (sidebarOverlay) {
+            if (sidebar.classList.contains("hidden")) {
+                sidebarOverlay.classList.remove("active");
+            } else {
+                sidebarOverlay.classList.add("active");
+            }
+        }
+    }
+    
+    function closeSidebar() {
+        sidebar.classList.add("hidden");
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.remove("active");
+        }
+    }
+    
+    // Guardar referencia para usar en applyFilters
+    window.closeSidebar = closeSidebar;
 }
 
 // Aplicar filtros
@@ -276,6 +307,13 @@ function applyFilters() {
     
     // Actualizar contador
     updateResultsCount();
+    
+    // Cerrar sidebar automáticamente en mobile después de aplicar filtros
+    if (window.innerWidth <= 768 && window.closeSidebar) {
+        setTimeout(() => {
+            window.closeSidebar();
+        }, 300);
+    }
 }
 
 // Buscar campo por nombre exacto
@@ -367,4 +405,9 @@ if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initializeMap);
 } else {
     initializeMap();
+}
+
+// Cerrar sidebar automáticamente en mobile al cargar la página
+if (window.innerWidth <= 768 && sidebar) {
+    sidebar.classList.add("hidden");
 }
